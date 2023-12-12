@@ -1,0 +1,35 @@
+diff --git a/diffuser/utils/config.py b/diffuser/utils/config.py
+index fe83bcb..53395d9 100644
+--- a/diffuser/utils/config.py
++++ b/diffuser/utils/config.py
+@@ -18,7 +18,7 @@ def import_class(_class):
+     print(f'[ utils/config ] Imported {repo_name}.{module_name}:{class_name}')
+     return _class
+ 
+-class Config(collections.Mapping):
++class Config(collections.abc.Mapping):
+ 
+     def __init__(self, _class, verbose=True, savepath=None, device=None, **kwargs):
+         self._class = import_class(_class)
+diff --git a/scripts/plan_maze2d.py b/scripts/plan_maze2d.py
+index d9920e4..403ddb5 100644
+--- a/scripts/plan_maze2d.py
++++ b/scripts/plan_maze2d.py
+@@ -15,6 +15,8 @@ class Parser(utils.Parser):
+ #---------------------------------- setup ----------------------------------#
+ 
+ args = Parser().parse_args('plan')
++import pickle
++pickle.dump(args, open('/content/args.pickle', 'wb'))
+ 
+ # logger = utils.Logger(args)
+ 
+@@ -22,7 +24,7 @@ env = datasets.load_environment(args.dataset)
+ 
+ #---------------------------------- loading ----------------------------------#
+ 
+-diffusion_experiment = utils.load_diffusion(args.logbase, args.dataset, args.diffusion_loadpath, epoch=args.diffusion_epoch)
++diffusion_experiment = utils.load_diffusion("/content/" + args.logbase, args.dataset, args.diffusion_loadpath, epoch=args.diffusion_epoch)
+ 
+ diffusion = diffusion_experiment.ema
+ dataset = diffusion_experiment.dataset
